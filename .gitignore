@@ -1,5 +1,6 @@
 *.cache
 obj
 bin
-my_ftrace
+ftrace
+build/
 *.json

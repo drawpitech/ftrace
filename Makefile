@@ -9,10 +9,10 @@ SRC 		:= 	$(shell find . -name '*.c')
 
 BUILD_DIR 	:= 	build
 
-NAME := ftrace
+NAME		:= ftrace
 
 CC 			:= 	gcc
-CFLAGS 		:= 	-std=gnu17 -Wall -Werror -Wextra -MMD -MP
+CFLAGS 		:= 	-std=gnu17 -Wall -Wextra -MMD -MP
 OBJ 		:= 	$(addprefix $(BUILD_DIR)/, $(SRC:.c=.o))
 
 all: $(NAME)
@@ -32,6 +32,7 @@ clean:
 fclean: clean
 	$(RM) $(NAME)
 
+.NOTPARALLEL: re
 re: fclean all
 
 .PHONY: all clean fclean re
