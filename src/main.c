@@ -25,6 +25,7 @@ static int initialize(int argc, char **argv)
     (void)argc;
     ctx.m_argv = get_args(argv);
     ctx.process = array_constructor();
+    ctx.symbols = array_constructor();
     if (NULL == ctx.process)
         exit(FAILURE);
     return strace(&ctx);

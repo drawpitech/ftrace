@@ -17,10 +17,4 @@ typedef struct {
     ptrdiff_t m_end_addr;
 } map_item_t;
 
-typedef struct {
-    map_item_t *m_items;
-    size_t m_len;
-    size_t m_capacity;
-} maps_t;
-
 void display_syscall(context_t *ctx);

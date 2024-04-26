@@ -7,13 +7,12 @@
 
 #include "strace.h"
 #include "errors.h"
-#include "strace_display.h"
+#include "map_mem.h"
 
 #include <sys/ptrace.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
-#include <stdio.h>
 
 int exec_trace(context_t *ctx)
 {
@@ -38,7 +37,6 @@ int trace(context_t *ctx)
         if (ptrace(PTRACE_GETREGS, ctx->m_pid, 0, &ctx->m_regs) == -1)
             return print_error(PTRACE_FAILED);
         display_syscall(ctx);
-        //printf("Entering function at %lld\n", ctx->m_regs.rip);
         if (ptrace(PTRACE_SINGLESTEP, ctx->m_pid, 0, 0) == -1)
             return print_error(PTRACE_FAILED);
         wait(&status);

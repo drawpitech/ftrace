@@ -5,14 +5,12 @@
 ** strace_display
 */
 
-#include "strace_display.h"
+#include "map_mem.h"
 #include "context.h"
-#include <string.h>
 #include <sys/ptrace.h>
 #include "syscall.h"
 #include <stdio.h>
 #include <stdint.h>
-#include <stddef.h>
 
 static void classic_display(context_t *ctx)
 {
@@ -62,51 +60,6 @@ static void display(context_t *ctx)
     display_ret(ctx);
 }
 
-static map_item_t *get_data(map_item_t *lib, char *line)
-{
-    char *lib_path = NULL;
-    char *start_ptr = NULL;
-    char *end_ptr = NULL;
-
-    start_ptr = strsep(&line, "-");
-    end_ptr = strsep(&line, "-");
-    if (strstr(line, "/") == NULL)
-        return NULL;
-    lib_path = strstr(line, "/");
-    lib_path[strlen(lib_path) - 1] = '\0';
-    strcpy(lib->m_path, lib_path);
-    lib->m_start_addr = strtol(start_ptr, NULL, 16);
-    lib->m_end_addr = strtol(end_ptr, NULL, 16);
-    return lib;
-}
-
-maps_t *parse_maps(int pid)
-{
-    FILE *f = NULL;
-    char *line = NULL;
-    size_t len = 0;
-    char path[PATH_MAX];
-    maps_t *maps = malloc(sizeof *maps);
-
-    memset(maps, 0, sizeof *maps);
-    sprintf(path, "/proc/%d/maps", pid);
-    f = fopen(path, "r");
-    if (f == NULL)
-        return NULL;
-    while (getline(&line, &len, f) != -1) {
-        if (maps->m_len >= maps->m_capacity) {
-            maps->m_capacity *= 2;
-            maps->m_items =
-                realloc(maps->m_items, sizeof(map_item_t) * maps->m_capacity);
-        }
-        if (get_data(&maps->m_items[maps->m_len], line) != NULL)
-            maps->m_len++;
-    }
-    fclose(f);
-    free(line);
-    return maps;
-}
-
 static void display_func_call(context_t *ctx)
 {
     printf(
@@ -120,7 +73,7 @@ void display_syscall(context_t *ctx)
     uint64_t orig_rax = ctx->m_regs.orig_rax;
 
     if ((int)orig_rax == -1) {
-        display_func_call(ctx);
+        //display_func_call(ctx);
         return;
     }
     if (orig_rax > SYSCALLS_AMOUNT)
