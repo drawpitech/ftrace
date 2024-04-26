@@ -10,6 +10,8 @@
 
 int add_elt_to_array(array_t *array, void *element)
 {
+    if (!element)
+        return 0;
     if (array->nb_elements + 1 == DEFAULT_SIZE) {
         array->element = realloc(array->element, array->size * 2);
         if (NULL == array->element)
