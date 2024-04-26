@@ -19,7 +19,6 @@ static void classic_display(context_t *ctx)
     unsigned long long orig_rax = ctx->m_regs.orig_rax;
     syscall_t val = get_syscall_by_id(orig_rax);
 
-    printf("%s(", val.m_name);
     if (val.m_nb_args == 0) {
         printf(") = ");
         return;

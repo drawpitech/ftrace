@@ -9,7 +9,6 @@
 
 #include <unistd.h>
 #include <stdbool.h>
-#include <uuid/uuid.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 
