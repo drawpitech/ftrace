@@ -6,6 +6,7 @@
 */
 
 #include <stdlib.h>
+#include <sys/signal.h>
 
 #pragma once
 #define NUM 1
@@ -129,6 +130,44 @@ typedef struct syscall_s {
     int m_arg5;
     int m_arg6;
 } syscall_t;
+
+typedef struct signal_s {
+    char *signal;
+    int code;
+} signal_t;
+
+static const signal_t signals[30] = {
+    {"SIGHUP", SIGHUP},
+    {"SIGINT", SIGINT},
+    {"SIGQUIT", SIGQUIT},
+    {"SIGILL", SIGILL},
+    {"SIGTRAP", SIGTRAP},
+    {"SIGABRT", SIGABRT},
+    {"SIGBUS", SIGBUS},
+    {"SIGFPE", SIGFPE},
+    {"SIGKILL", SIGKILL},
+    {"SIGUSR1", SIGUSR1},
+    {"SIGPIPE", SIGPIPE},
+    {"SIGALRM", SIGALRM},
+    {"SIGTERM", SIGTERM},
+    {"SIGSTKFLT", SIGSTKFLT},
+    {"SIGCHLD", SIGCHLD},
+    {"SIGCONT", SIGCONT},
+    {"SIGSTOP", SIGSTOP},
+    {"SIGTSTP", SIGTSTP},
+    {"SIGTTIN", SIGTTIN},
+    {"SIGTTOU", SIGTTOU},
+    {"SIGURG", SIGURG},
+    {"SIGXCPU", SIGXCPU},
+    {"SIGXFSZ", SIGXFSZ},
+    {"SIGVTALRM", SIGVTALRM},
+    {"SIGPROF", SIGPROF},
+    {"SIGWINCH", SIGWINCH},
+    {"SIGIO", SIGIO},
+    {"SIGPWR", SIGPWR},
+    {"SIGSYS", SIGSYS},
+    {NULL, 0},
+};
 
 static const syscall_t g_syscalls[330] = {
     {0, "read", 3, NUM, NUM, VOID_P, NUM, 0, 0, 0},

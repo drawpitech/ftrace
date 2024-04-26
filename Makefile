@@ -5,7 +5,7 @@
 ## Makefile
 ##
 
-SRC 		:= 	$(shell find . -name '*.c')
+SRC 		:= 	$(shell find src/ -name '*.c')
 
 BUILD_DIR 	:= 	build
 
