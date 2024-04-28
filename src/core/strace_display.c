@@ -50,7 +50,7 @@ static void display_ret(context_t *ctx)
 
 static void display(context_t *ctx)
 {
-    printf("%s(", get_syscall_by_id(ctx->m_regs.orig_rax).m_name);
+    printf("Syscall %s(", get_syscall_by_id(ctx->m_regs.orig_rax).m_name);
     if (ctx->m_regs.orig_rax == 59) {
         printf("\"%s\", [\"%s\"], ", ctx->m_argv[0], ctx->m_argv[0]);
         printf("0x%llx /* %d vars */)\n", ctx->m_regs.rdx, 0);
