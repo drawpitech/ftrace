@@ -39,7 +39,7 @@ static map_item_t *get_data(map_item_t *lib, char *line)
 
 static void parse_lib(context_t *ctx)
 {
-    FILE *f;
+    FILE *f = NULL;
     char *line = NULL;
     size_t len = 0;
     char buffer[DEFAULT_SIZE];
@@ -53,7 +53,8 @@ static void parse_lib(context_t *ctx)
         lib = malloc(sizeof *lib);
         if (get_data(lib, line) == NULL)
             continue;
-        add_elt_to_array(ctx->process, lib);
+        if (elf_file_get_symbols(&lib->m_elf, lib->m_path))
+            add_elt_to_array(ctx->process, lib);
     }
     fclose(f);
 }
@@ -68,21 +69,14 @@ static char *format_name(char *name, unsigned long addr)
 
 static char *get_function_in_lib(map_item_t *lib, long addr)
 {
-    elf_file_t elf = {0};
     static char name[BUFSIZ] = {0};
     symbol_t *symbol = NULL;
 
-    if (!elf_file_get_symbols(&elf, lib->m_path))
-        return NULL;
-    for (size_t i = 0; i < elf.symbols->nb_elements; ++i) {
-        symbol = elf.symbols->element[i];
-        if (symbol->addr == addr) {
-            strcpy(name, symbol->name);
-            elf_file_unload_symbols(&elf);
-            return name;
-        }
+    for (size_t i = 0; i < lib->m_elf.symbols->nb_elements; ++i) {
+        symbol = lib->m_elf.symbols->element[i];
+        if (symbol->addr == (uintmax_t)addr)
+            return strcpy(name, symbol->name);
     }
-    elf_file_unload_symbols(&elf);
     return NULL;
 }
 
