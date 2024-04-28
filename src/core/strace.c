@@ -38,7 +38,6 @@ static void display_signal(siginfo_t signal)
     }
 }
 
-
 long handle_end_of_prog(context_t *ctx, int status)
 {
     long exit_status = 0;
