@@ -13,6 +13,7 @@ NAME		:= ftrace
 
 CC 			:= 	gcc
 CFLAGS 		:= 	-std=gnu17 -Wall -Wextra -MMD -MP
+LDLIBS 		:= 	-lelf
 OBJ 		:= 	$(addprefix $(BUILD_DIR)/, $(SRC:.c=.o))
 
 all: $(NAME)
@@ -20,7 +21,7 @@ all: $(NAME)
 -include $(OBJ:.o=.d)
 
 $(NAME): $(OBJ)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJ)
+	$(CC) $(CFLAGS) $(LDLIBS) -o $(NAME) $(OBJ)
 
 $(BUILD_DIR)/%.o: %.c
 	@mkdir -p $(dir $@)

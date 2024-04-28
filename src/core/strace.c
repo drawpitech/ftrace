@@ -73,6 +73,8 @@ int trace(context_t *ctx)
         return print_error(PTRACE_FAILED);
     for (;;) {
         handle_signal(ctx, status);
+        if (WIFEXITED(status))
+            break;
         if (ptrace(PTRACE_GETREGS, ctx->m_pid, 0, &ctx->m_regs) == -1)
             return print_error(PTRACE_FAILED);
         display_syscall(ctx);
