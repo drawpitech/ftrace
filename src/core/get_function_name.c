@@ -5,17 +5,17 @@
 ** get_function_name
 */
 
+#include <fcntl.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
 #include "array.h"
 #include "context.h"
+#include "get_elf_symbols.h"
 #include "map_mem.h"
-
-#include <unistd.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <string.h>
-#include <stddef.h>
-#include <stdlib.h>
-
 
 static map_item_t *get_data(map_item_t *lib, char *line)
 {
@@ -68,7 +68,21 @@ static char *format_name(char *name, unsigned long addr)
 
 static char *get_function_in_lib(map_item_t *lib, long addr)
 {
-    // TODO
+    elf_file_t elf = {0};
+    static char name[BUFSIZ] = {0};
+    symbol_t *symbol = NULL;
+
+    if (!elf_file_get_symbols(&elf, lib->m_path))
+        return NULL;
+    for (size_t i = 0; i < elf.symbols->nb_elements; ++i) {
+        symbol = elf.symbols->element[i];
+        if (symbol->addr == addr) {
+            strcpy(name, symbol->name);
+            elf_file_unload_symbols(&elf);
+            return name;
+        }
+    }
+    elf_file_unload_symbols(&elf);
     return NULL;
 }
 

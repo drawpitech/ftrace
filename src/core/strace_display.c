@@ -67,8 +67,7 @@ static void display_func_call(context_t *ctx)
     if (NULL == name)
         return;
     printf(
-        "\033[1;5;91m%s\033[m "
-        "Entering function at 0x%lld\n",
+        "Entering function %s at 0x%llx\n",
         name,
         ctx->m_regs.rip);
 }
@@ -78,7 +77,7 @@ void display_syscall(context_t *ctx)
     uint64_t orig_rax = ctx->m_regs.orig_rax;
 
     if ((int)orig_rax == -1) {
-        // display_func_call(ctx);
+        display_func_call(ctx);
         return;
     }
     if (orig_rax > SYSCALLS_AMOUNT)
