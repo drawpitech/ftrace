@@ -23,7 +23,7 @@ typedef struct {
 
 typedef struct {
     uintmax_t addr;
-    const char *name;
+    char *name;
 } symbol_t;
 
 bool elf_file_get_symbols(elf_file_t *file, const char *filename);

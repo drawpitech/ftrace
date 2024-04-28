@@ -67,15 +67,18 @@ static char *format_name(char *name, unsigned long addr)
     return strdup(buffer);
 }
 
-static char *get_function_in_lib(map_item_t *lib, long addr)
+static char *get_function_in_lib(context_t *ctx, map_item_t *lib, long addr)
 {
     static char name[BUFSIZ] = {0};
     symbol_t *symbol = NULL;
 
     for (size_t i = 0; i < lib->m_elf.symbols->nb_elements; ++i) {
         symbol = lib->m_elf.symbols->element[i];
-        if (symbol->addr == (uintmax_t)addr)
-            return strcpy(name, symbol->name);
+        if (symbol->addr != (uintmax_t)addr)
+            continue;
+        strcpy(name, symbol->name);
+        stack_push(&ctx->call_stack, symbol->name);
+        return name;
     }
     return NULL;
 }
@@ -91,7 +94,7 @@ char *get_function_name(context_t *ctx, long addr)
     for (size_t i = 0; i < ctx->process->nb_elements; ++i) {
         read = ctx->process->element[i];
         if (addr >= read->m_start_addr && addr <= read->m_end_addr)
-            return get_function_in_lib(read, addr);
+            return get_function_in_lib(ctx, read, addr);
     }
     return NULL;
 }

@@ -60,9 +60,9 @@ static void display(context_t *ctx)
     display_ret(ctx);
 }
 
-static void display_func_call(context_t *ctx)
+static void display_func_call(context_t *ctx, long addr)
 {
-    char *name = get_function_name(ctx, ctx->m_regs.rip);
+    char *name = get_function_name(ctx, addr);
 
     if (NULL == name)
         return;
@@ -72,12 +72,30 @@ static void display_func_call(context_t *ctx)
         ctx->m_regs.rip);
 }
 
+static void leave_function(context_t *ctx)
+{
+    char *name = NULL;
+
+    if (stack_is_empty(&ctx->call_stack))
+        return;
+    name = stack_pop(&ctx->call_stack);
+    if (NULL == name)
+        return;
+    printf("Leaving function %s\n", name);
+}
+
 void display_syscall(context_t *ctx)
 {
     uint64_t orig_rax = ctx->m_regs.orig_rax;
+    uint64_t rip = ctx->m_regs.rip;
 
+    if ((rip & 0xFF) == 0xc3
+        || (rip & 0xFF) == 0xcb
+        || (rip & 0xFF) == 0xc2
+        || (rip & 0xFF) == 0xca)
+        return leave_function(ctx);
     if ((int)orig_rax == -1) {
-        display_func_call(ctx);
+        display_func_call(ctx, (long)rip);
         return;
     }
     if (orig_rax > SYSCALLS_AMOUNT)

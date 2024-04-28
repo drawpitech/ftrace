@@ -71,6 +71,7 @@ int trace(context_t *ctx)
         return 0;
     if (ptrace(PTRACE_SETOPTIONS, ctx->m_pid, 0, PTRACE_O_TRACEEXIT) == -1)
         return print_error(PTRACE_FAILED);
+    stack_init(&ctx->call_stack);
     for (;;) {
         handle_signal(ctx, status);
         if (WIFEXITED(status))
